@@ -1,6 +1,7 @@
 package com.example.yj.audiotest;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,6 +25,7 @@ import java.io.OutputStream;
 import java.lang.*;
 
 
+
 public class MyActivity extends Activity {
 
     boolean isrecording;
@@ -43,9 +45,7 @@ public class MyActivity extends Activity {
         final TextView tview=(TextView)findViewById(R.id.textView);
         final Button btn=(Button)findViewById(R.id.id_btn_record);
         final Button btn_stop=(Button)findViewById(R.id.btnStop);
-
-        initLocalSocket();
-        initializeAudio();
+        final Button btn_play=(Button)findViewById(R.id.btnplay);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +54,7 @@ public class MyActivity extends Activity {
 
                 if(false==isrecording) {
                     try {
-                        initializeAudio();
+                       // initializeAudio();
                         isrecording=true;
                     } catch (Exception e) {
                         //releaseMediaRecorder();
@@ -84,64 +84,23 @@ public class MyActivity extends Activity {
                     Log.d(TAG, "has been stopped");
             }
         });
+
+/*
+        btn_play.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v)
+            {
+               // MediaPlayer.create()
+                MediaPlayer mediaPlayer=new MediaPlayer();
+                mediaPlayer.setDataSource();
+                mediaPlayer.start();
+
+            }
+        });
+        */
     }
-
-
-    private void initLocalSocket()
-    {
-        receiver = new LocalSocket();
-        try
-        {
-            lss = new LocalServerSocket("amr");
-            receiver.connect(new LocalSocketAddress("amr"));
-            receiver.setReceiveBufferSize(buffersize);
-            receiver.setSendBufferSize(buffersize);
-           // Log.e("", "filefd:" + sender.getFileDescriptor());
-            sender = lss.accept();
-            Log.e("", "sender filefd:" + sender.getFileDescriptor());
-            sender.setReceiveBufferSize(buffersize);
-            sender.setSendBufferSize(buffersize);
-        } catch (IOException e1)
-        {
-            e1.printStackTrace();
-            Log.e("", "localSocket error:" + e1.getMessage());
-        }
-    }
-
-    private boolean initializeAudio()
-    {
-        try
-        {
-            if(mMediaRecorder == null)
-                mMediaRecorder = new MediaRecorder();
-            else
-                mMediaRecorder.reset();
-
-            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
-            Log.i(TAG, "Video：Current container format: "+"3GP\n");
-            mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-
-            Log.i(TAG, "Video：Current encoding format: "+"H264\n");
-
-            mMediaRecorder.setOutputFile(sender.getFileDescriptor()); //设置以流方式输出
-            Log.i(TAG, "start send into sender~");
-
-            mMediaRecorder.setMaxDuration(0);
-            mMediaRecorder.prepare();
-            mMediaRecorder.start();
-            return true;
-        } catch (Exception e)
-        {
-            // TODO: handle exception
-            e.printStackTrace();
-            return false;
-        }
-    }
-
 
     public class ThreadFromRunnable implements Runnable{
-        MediaRecorder mMediaRecorder=new MediaRecorder();
+
         public void run()
         {
             initLocalSocket();
