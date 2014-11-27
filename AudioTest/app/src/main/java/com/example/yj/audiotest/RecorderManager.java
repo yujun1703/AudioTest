@@ -2,6 +2,7 @@ package com.example.yj.audiotest;
 
 import android.media.MediaRecorder;
 import android.net.LocalSocket;
+import android.net.rtp.RtpStream;
 import android.util.Log;
 
 import java.io.FileDescriptor;
@@ -16,7 +17,6 @@ public class RecorderManager {
 
     public RecorderManager()
     {
-       // filefd=fileDescriptor;
         mMediaRecorder=new MediaRecorder();
     }
 
@@ -30,9 +30,12 @@ public class RecorderManager {
                 mMediaRecorder.reset();
 
             mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+            //mMediaRecorder.setOutputFormat(OUTPUT_FORMAT_RTP_AVP);
+            mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+
             Log.i(TAG, "Audio：Current container format: " + "3GP\n");
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+
 
             Log.i(TAG, "Audio：Current encoding format: "+"aac\n");
 

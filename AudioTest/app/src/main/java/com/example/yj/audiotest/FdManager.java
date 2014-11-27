@@ -6,16 +6,16 @@ import android.net.LocalSocketAddress;
 import android.os.Environment;
 import android.util.Log;
 
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
+import java.net.MulticastSocket;
+import java.net.DatagramPacket;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
 
+import java.net.InetAddress;
 /**
  * Created by zhangyun on 14/11/26.
  */
@@ -26,6 +26,15 @@ public class FdManager {
     FileDescriptor sockfd;
     FileDescriptor filefd;
     String filepath;
+    final int buffersize=5000;
+    private static final int MULTICAST_PORT=5111;
+    private static final String GROUP_IP="224.5.0.7";
+    private static byte[] sendData;
+
+    public FdManager()
+    {
+
+    }
 
     public FileDescriptor GetSocket()
     {
@@ -50,7 +59,39 @@ public class FdManager {
             Log.e("", "localSocket error:" + e1.getMessage());
 
         }
+
         return sockfd;
+    }
+
+    public void SendToBCast()
+    {
+        DatagramPacket packet;
+        try {
+            MulticastSocket multicastSocket = new MulticastSocket(MULTICAST_PORT);
+            multicastSocket.setLoopbackMode(false);
+            InetAddress group = InetAddress.getByName(GROUP_IP);
+            multicastSocket.joinGroup(group);
+            packet=new DatagramPacket(sendData, sendData.length,group,MULTICAST_PORT);
+
+            InputStream stream = receiver.getInputStream();
+            byte[] buffer = new byte[buffersize];
+            int bufferReadResult;
+
+            while ((bufferReadResult = stream.read(buffer, 0, buffersize)) > 0) {
+                Log.i(TAG, "bufferReadResult:" + bufferReadResult);
+                packet.setData(buffer,0,bufferReadResult);
+                multicastSocket.send(packet);
+                //for (int i = 0; i < bufferReadResult; i++) {
+                  //  dos.writeByte(buffer[i]);
+                //}
+               // dos.flush();
+            }
+            Log.i(TAG, " stopped,read buff size:"+bufferReadResult);
+           // dos.close();
+
+        } catch (IOException e) {
+            Log.e(TAG, "IOException:" + e);
+        }
     }
 
     public FileDescriptor GetFileFd()
@@ -76,9 +117,11 @@ public class FdManager {
         return filefd;
     }
 
+
     public void SocketRead()
     {
-        final int buffersize=5000;
+
+
         try {
             InputStream stream = receiver.getInputStream();
             byte[] buffer = new byte[buffersize];
