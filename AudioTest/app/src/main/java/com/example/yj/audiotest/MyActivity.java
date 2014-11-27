@@ -33,10 +33,11 @@ public class MyActivity extends Activity {
     LocalServerSocket lss;
     LocalSocket sender;
     MediaRecorder mMediaRecorder;
+    FdManager fdManager;
 
     final int buffersize=5000;
     final String TAG="audio";
-
+    RecorderManager recorderManager=new RecorderManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class MyActivity extends Activity {
                 if(false==isrecording) {
                     try {
                        // initializeAudio();
+                        recorderManager=new RecorderManager();
                         isrecording=true;
                     } catch (Exception e) {
                         //releaseMediaRecorder();
@@ -76,7 +78,7 @@ public class MyActivity extends Activity {
             {
                 if(true==isrecording) {
                     tview.setText("quit recording");
-                    mMediaRecorder.stop();
+                    recorderManager.stopRecorder();
                     isrecording = false;
                     Log.d(TAG, "stop");
                 }
@@ -85,20 +87,19 @@ public class MyActivity extends Activity {
             }
         });
 
-/*
+
         btn_play.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v)
             {
-               // MediaPlayer.create()
-                MediaPlayer mediaPlayer=new MediaPlayer();
-                mediaPlayer.setDataSource();
-                mediaPlayer.start();
+                fdManager.getFilepath();
+                MediaPlayManager mediaPlayManager=new MediaPlayManager(fdManager.getFilepath());
+                mediaPlayManager.mediaPlay();
 
             }
         });
-        */
-    }
 
+    }
+/*
     public class ThreadFromRunnable implements Runnable{
 
         public void run()
@@ -107,29 +108,17 @@ public class MyActivity extends Activity {
             initializeAudio();
         }
     }
-
+*/
     public class ReadThread implements Runnable{
         public void run()
         {
+            fdManager=new FdManager();
 
-            File file=new File(Environment.getExternalStorageDirectory(),"raw.mp4");
+            recorderManager.recorder(fdManager.GetFileFd());
 
-            Log.d("aa", "filepath="+Environment.getExternalStorageDirectory());
-            try{
-                file.createNewFile();
-            }
-            catch (IOException e)
-            {
-                Log.d("aa", "IOException",e);
-            }
-
+/*
             try {
-                OutputStream os = new FileOutputStream(file);
 
-                BufferedOutputStream bos = new BufferedOutputStream(os);
-
-                DataOutputStream dos = new DataOutputStream(bos);
-                Log.i(TAG, "##initializeVideo....");
 
 
                 try {
@@ -156,6 +145,7 @@ public class MyActivity extends Activity {
             {
                 Log.d("aa", "FileNotFoundException",e);
             }
+            */
         }
     }
 
