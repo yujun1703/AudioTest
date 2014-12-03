@@ -12,14 +12,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import com.imove.voipdemo.dummy.DummyContent;
+import com.imove.voipdemo.dummy.FriendContent;
+import com.imove.voipdemo.dummy.FriendItem;
+
 /**
  * A fragment representing a list of Items.
  * <p />
  * Large screen devices (such as tablets) are supported by replacing the ListView
  * with a GridView.
  * <p />
- * Activities containing this fragment MUST implement the {@link Callbacks}
+ * Activities containing this fragment MUST implement the
  * interface.
  */
 public class ItemListFragment extends Fragment implements AbsListView.OnItemClickListener {
@@ -32,6 +34,10 @@ public class ItemListFragment extends Fragment implements AbsListView.OnItemClic
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private FriendContent friendContent;
+
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -72,9 +78,12 @@ public class ItemListFragment extends Fragment implements AbsListView.OnItemClic
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        friendContent = new FriendContent();
+        friendContent.addItem(new FriendItem("1","item1"));
+
         // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+        mAdapter = new ArrayAdapter<FriendItem>(getActivity(),
+                android.R.layout.simple_list_item_1, android.R.id.text1, friendContent.ITEMS);
     }
 
     @Override
@@ -115,7 +124,7 @@ public class ItemListFragment extends Fragment implements AbsListView.OnItemClic
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+            mListener.onFragmentInteraction(friendContent.ITEMS.get(position).id);
         }
     }
 
