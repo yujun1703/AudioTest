@@ -15,15 +15,16 @@ import android.os.Build;
 
 import com.imove.voipdemo.R;
 
-public class ListActivity extends Activity implements ItemListFragment.OnFragmentInteractionListener{
-
+public class ListActivity extends Activity implements ItemListFragment.OnFragmentInteractionListener,ItemFragment.OnFragmentInteractionListener{
+    ItemListFragment itemListFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        itemListFragment=new ItemListFragment();
         if (savedInstanceState == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, new ItemListFragment())
+                    .add(R.id.container, itemListFragment)
                     .commit();
         }
     }
@@ -32,8 +33,10 @@ public class ListActivity extends Activity implements ItemListFragment.OnFragmen
     public void onFragmentInteraction(String id)
     {
         Log.d("aa","bb:"+id);
-
-
+        getFragmentManager().beginTransaction()
+                .hide(itemListFragment)
+                .add(R.id.container,new ItemFragment(),id)
+                .commit();
     }
 
 

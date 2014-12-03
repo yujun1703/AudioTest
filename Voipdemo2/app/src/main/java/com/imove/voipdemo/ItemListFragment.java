@@ -3,7 +3,6 @@ package com.imove.voipdemo;
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-
 import com.imove.voipdemo.dummy.DummyContent;
-
 /**
  * A fragment representing a list of Items.
  * <p />
